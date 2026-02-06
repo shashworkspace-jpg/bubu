@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bubu 💖</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* ===== Main Card (LOCKED CENTER) ===== */
+    .card {
+      position: relative;
+      z-index: 5;
+      width: 420px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 35px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      animation: fadeIn 1.5s ease;
+    }
+
+    h1 {
+      font-size: 2.4em;
+      margin-bottom: 10px;
+    }
+
+    .photo-grid {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .photo-grid img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 15px;
+      flex: 1;
+      border: 2px solid rgba(255,255,255,0.5);
+    }
+
+    .heart {
+      font-size: 55px;
+      animation: beat 1s infinite;
+      margin: 15px 0;
+    }
+
+    p {
+      font-size: 1.15em;
+      line-height: 1.6;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 26px;
+      border: none;
+      border-radius: 25px;
+      background: #ff4d6d;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: #ff2e55;
+    }
+
+    .letter {
+      margin-top: 25px;
+      font-size: 1.15em;
+      line-height: 1.7;
+      white-space: pre-line;
+      opacity: 0;
+      min-height: 160px;
+      transition: opacity 1s ease;
+    }
+
+    .letter.show {
+      opacity: 1;
+    }
+
+    /* ===== Floating Background (FIXED, NO LAYOUT SHIFT) ===== */
+    .floating-hearts span,
+    .floating-images img {
+      position: fixed;
+      bottom: -30px;
+      animation: floatUp linear infinite;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    .floating-hearts span {
+      font-size: 24px;
+    }
+
+    .floating-images img {
+      width: 90px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    /* ===== Animations ===== */
+    @keyframes floatUp {
+      from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-120vh) rotate(10deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎵 Background Song -->
+  <audio id="loveSong">
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 💖 Main Card -->
+  <div class="card">
+    <h1>Happy Valentine’s Day 💘</h1>
+
+    <div class="photo-grid">
+      <img src="images/pic1.jpg">
+      <img src="images/pic2.jpg">
+      <img src="images/pic3.jpg">
+    </div>
+
+    <div class="heart">❤️</div>
+
+    <p>
+      Every picture here holds a memory I love.<br>
+      And every memory leads back to you 💕
+    </p>
+
+    <button onclick="startLove()">Read my letter 💌</button>
+    <div id="letter" class="letter"></div>
+  </div>
+
+  <!-- Background Layers -->
+  <div class="floating-hearts"></div>
+  <div class="floating-images"></div>
+
+  <script>
+    /* ===== Love Letter ===== */
+    const message = `Bubu ❤️
+
+Somewhere between all our little moments,
+you became my safe place,
+my smile,
+my favorite thought.
+
+I choose you.
+Today. Tomorrow.
+Always 💕`;
+
+    let index = 0;
+
+    function startLove() {
+      const song = document.getElementById("loveSong");
+      song.volume = 0.5;
+      song.play();
+
+      const letter = document.getElementById("letter");
+      letter.classList.add("show");
+      letter.innerHTML = "";
+      index = 0;
+      typeWriter(letter);
+    }
+
+    function typeWriter(el) {
+      if (index < message.length) {
+        el.innerHTML += message.charAt(index);
+        index++;
+        setTimeout(() => typeWriter(el), 45);
+      }
+    }
+
+    /* ===== Floating Hearts ===== */
+    const heartContainer = document.querySelector('.floating-hearts');
+    setInterval(() => {
+      const heart = document.createElement('span');
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (5 + Math.random() * 4) + 's';
+      heartContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 9000);
+    }, 350);
+
+    /* ===== Floating Images ===== */
+    const imageContainer = document.querySelector('.floating-images');
+    const images = ['images/pic1.jpg', 'images/pic2.jpg', 'images/pic3.jpg'];
+
+    setInterval(() => {
+      const img = document.createElement('img');
+      img.src = images[Math.floor(Math.random() * images.length)];
+      img.style.left = Math.random() * 90 + 'vw';
+      img.style.animationDuration = (8 + Math.random() * 5) + 's';
+      imageContainer.appendChild(img);
+      setTimeout(() => img.remove(), 13000);
+    }, 2500);
+  </script>
+
+</body>
+</html>
